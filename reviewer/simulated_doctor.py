@@ -7,27 +7,32 @@ class SimulatedDoctor:
 
         edited = copy.deepcopy(summary)
 
-        # Hidden Rule 1
+        corrections = []
+
         if edited["allergies"] == \
            "MISSING - Clinician Review Required":
 
-            edited["allergies"] = \
-                "REVIEW NEEDED"
+            edited["allergies"] = "REVIEW NEEDED"
 
-        # Hidden Rule 2
+            corrections.append(
+                {
+                    "field": "allergies",
+                    "value": "REVIEW NEEDED"
+                }
+            )
+
         if edited["clinician_review_flags"]:
 
             edited["clinician_review_flags"].append(
                 "Confirm diagnosis before finalization."
             )
 
-        # Hidden Rule 3
-        if edited["medication_changes"]["needs_review"]:
-
-            edited["medication_changes"][
-                "needs_review"
-            ].append(
-                "Medication change reason undocumented."
+            corrections.append(
+                {
+                    "field": "diagnosis_conflict",
+                    "value":
+                    "Confirm diagnosis before finalization."
+                }
             )
 
-        return edited
+        return edited, corrections
